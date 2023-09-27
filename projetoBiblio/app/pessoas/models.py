@@ -25,3 +25,4 @@ class UsuarioRead(UsuarioBase):
 class UsuarioCreate(UsuarioBase):
     senha: str = Field(min_length=3)
 
+
