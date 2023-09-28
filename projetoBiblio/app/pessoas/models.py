@@ -1,5 +1,4 @@
 from typing import Optional
-from pydantic import EmailStr, validate_email
 from sqlmodel import Field, SQLModel
 
 
@@ -26,3 +25,18 @@ class UsuarioCreate(UsuarioBase):
     senha: str = Field(min_length=3)
 
 
+class AdminBase(Pessoa):
+    pass
+
+
+class Admin(AdminBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    hashed_password: str
+
+
+class AdminRead(AdminBase):
+    id: int
+
+
+class AdminCreate(AdminBase):
+    senha: str = Field(min_length=3)

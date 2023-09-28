@@ -1,5 +1,5 @@
 from typing import Annotated, List
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 
 from projetoBiblio.app.core.db import get_session
@@ -15,6 +15,14 @@ db_dependency = Annotated[Session, Depends(get_session)]
 def get_all(db: db_dependency):
     usuarios = db.exec(select(Usuario)).all()
     return usuarios
+
+
+@router.get('/usuario/{usuario_id}', response_model=UsuarioRead)
+def get_usuario(db: db_dependency, usuario_id: int):
+    db_usuario = db.get(Usuario, usuario_id)
+    if not db_usuario:
+        raise HTTPException(status_code=404, detail="Usuario nao encontrado")
+    return db_usuario
 
 
 @router.post('/usuario', response_model=UsuarioRead)
