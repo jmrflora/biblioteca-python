@@ -1,10 +1,10 @@
 import uvicorn
 from fastapi import FastAPI
 
-from projetoBiblio.app import settings
+from core.db import settings
 from core.models import HealthCheck
 from core.db import engine, SQLModel
-from projetoBiblio.app.router.endpoints import api_router
+from router.endpoints import api_router
 
 app = FastAPI(
     title=settings.project_name,

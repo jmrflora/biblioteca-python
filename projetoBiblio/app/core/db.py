@@ -2,8 +2,8 @@ from fastapi import FastAPI
 from sqlmodel import Session, create_engine, SQLModel
 
 from projetoBiblio.app import settings
-from projetoBiblio.app.pessoas import models
-from projetoBiblio.app.Livro import models
+from ..pessoas import models
+from ..Livro import models
 
 db_connection_str = settings.db_connection_str
 

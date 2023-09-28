@@ -2,7 +2,7 @@ from typing import Annotated, List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 
-from projetoBiblio.app.core.db import get_session
+from ..core.db import get_session
 from .models import *
 
 router = APIRouter()

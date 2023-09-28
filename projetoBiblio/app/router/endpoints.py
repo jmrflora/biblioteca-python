@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from projetoBiblio.app.pessoas.api import router as pessoas_router
-from projetoBiblio.app.Livro.api import router as livros_router
+from ..pessoas.api import router as pessoas_router
+from ..Livro.api import router as livros_router
 
 
 api_router = APIRouter()

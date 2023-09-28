@@ -2,9 +2,9 @@ from typing import Annotated, List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 
-from projetoBiblio.app.core.db import get_session
-from projetoBiblio.app.pessoas.models import UsuarioCreate, UsuarioRead, Usuario
-from projetoBiblio.app.core.hasher import Hasher
+from ..core.db import get_session
+from ..pessoas.models import UsuarioCreate, UsuarioRead, Usuario
+from ..core.hasher import Hasher
 
 router = APIRouter()
 

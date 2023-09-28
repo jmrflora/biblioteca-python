@@ -1,5 +1,7 @@
-from typing import Optional
-from sqlmodel import Field, SQLModel
+from typing import Optional, List
+from sqlmodel import Field, SQLModel, Relationship
+
+from ..emprestimo.models import Emprestimo
 
 
 class Pessoa(SQLModel):
@@ -15,6 +17,8 @@ class UsuarioBase(Pessoa):
 class Usuario(UsuarioBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     hashed_password: str
+
+    exemplar_links: List[Emprestimo] = Relationship(back_populates="usuario")
 
 
 class UsuarioRead(UsuarioBase):
