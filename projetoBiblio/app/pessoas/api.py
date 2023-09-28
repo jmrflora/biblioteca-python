@@ -1,6 +1,6 @@
-from typing import Annotated
+from typing import Annotated, List
 from fastapi import APIRouter, Depends
-from sqlmodel import Session
+from sqlmodel import Session, select
 
 from projetoBiblio.app.core.db import get_session
 from projetoBiblio.app.pessoas.models import UsuarioCreate, UsuarioRead, Usuario
@@ -11,11 +11,10 @@ router = APIRouter()
 db_dependency = Annotated[Session, Depends(get_session)]
 
 
-@router.get('/')
-def get_all():
-    return {
-        "mensagem": "ok"
-    }
+@router.get('/usuario', response_model=List[UsuarioRead])
+def get_all(db: db_dependency):
+    usuarios = db.exec(select(Usuario)).all()
+    return usuarios
 
 
 @router.post('/usuario', response_model=UsuarioRead)
