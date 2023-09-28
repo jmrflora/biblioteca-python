@@ -12,7 +12,7 @@ app = FastAPI(
     version=settings.version
 )
 
-SQLModel.metadata.create_all(engine)
+# SQLModel.metadata.create_all(engine)
 
 
 @app.get('/', response_model=HealthCheck, tags=["status"])
