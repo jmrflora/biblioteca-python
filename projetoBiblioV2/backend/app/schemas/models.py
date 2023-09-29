@@ -16,7 +16,6 @@ class LivroBase(SQLModel):
 
 
 class Livro(LivroBase, table=True):
-    __table_args__ = {'extend_existing': True}
     id: Optional[int] = Field(default=None, primary_key=True)
 
     exemplares: List["Exemplar"] = Relationship(back_populates="livro")
@@ -35,7 +34,6 @@ class ExemplarBase(SQLModel):
 
 
 class Exemplar(ExemplarBase, table=True):
-    __table_args__ = {'extend_existing': True}
     id: Optional[int] = Field(default=None, primary_key=True)
 
     livro: Optional[Livro] = Relationship(back_populates="exemplares")
@@ -70,7 +68,6 @@ class UsuarioBase(Pessoa):
 
 
 class Usuario(UsuarioBase, table=True):
-    __table_args__ = {'extend_existing': True}
     id: Optional[int] = Field(default=None, primary_key=True)
     hashed_password: str
 
@@ -90,7 +87,6 @@ class AdminBase(Pessoa):
 
 
 class Admin(AdminBase, table=True):
-    __table_args__ = {'extend_existing': True}
     id: Optional[int] = Field(default=None, primary_key=True)
     hashed_password: str
 
