@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "projetopoetry"
+version = "0.1.0"
+description = ""
+authors = ["José Matheus R. Flora <jmrfloraxbox@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+sqlmodel = "^0.0.8"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
