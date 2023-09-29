@@ -18,7 +18,18 @@ class Emprestimo(EmprestimoBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
 
     exemplar: "Exemplar" = Relationship(back_populates="usuario_links")
-    usuario: "Usuario" = Relationship(back_populates="exemplar_id")
+    usuario: "Usuario" = Relationship(back_populates="exemplar_links")
+
+
+class EmprestimoCreate(EmprestimoBase):
+    pass
+
+
+class EmprestimoRead(EmprestimoBase):
+    id: int
+
+
+
 
 
 # Livros e exemplares:
@@ -112,3 +123,6 @@ class AdminCreate(AdminBase):
     senha: str = Field(min_length=3)
 
 
+class EmprestimoReadComUsuarioExemplar(EmprestimoRead):
+    usuario: Optional[UsuarioRead]
+    exemplar: Optional[ExemplarRead]

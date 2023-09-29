@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from backend.app.api.livro import router as livros_router
 from backend.app.api.usuario import router as usuarios_router
 from backend.app.api.admin import router as admins_router
+from backend.app.api.emprestimo import router as emprestimos_router
 
 api_router = APIRouter()
 
@@ -12,6 +13,7 @@ routers = (
     (livros_router, "livros", "livros"),
     (usuarios_router, "usuarios", "usuarios"),
     (admins_router, "admins", "admins"),
+    (emprestimos_router, "emprestimos", "emprestimos"),
 )
 
 for router_item in routers:
