@@ -9,6 +9,18 @@ class HealthCheck(BaseModel):
     version: str
 
 
+class EmprestimoBase(SQLModel):
+    exemplar_id: Optional[int] = Field(default=None, foreign_key="exemplar.id")
+    usuario_id: Optional[int] = Field(default=None, foreign_key="usuario.id")
+
+
+class Emprestimo(EmprestimoBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+
+    exemplar: "Exemplar" = Relationship(back_populates="usuario_links")
+    usuario: "Usuario" = Relationship(back_populates="exemplar_id")
+
+
 # Livros e exemplares:
 class LivroBase(SQLModel):
     nome: str = Field(min_length=3)
@@ -38,7 +50,7 @@ class Exemplar(ExemplarBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
 
     livro: Optional[Livro] = Relationship(back_populates="exemplares")
-    # usuario_links: List[Emprestimo] = Relationship(back_populates="exemplar")
+    usuario_links: List[Emprestimo] = Relationship(back_populates="exemplar")
 
 
 class ExemplarCreate(ExemplarBase):
@@ -72,7 +84,7 @@ class Usuario(UsuarioBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     hashed_password: str
 
-    # exemplar_links: List[Emprestimo] = Relationship(back_populates="usuario")
+    exemplar_links: List[Emprestimo] = Relationship(back_populates="usuario")
 
 
 class UsuarioRead(UsuarioBase):
