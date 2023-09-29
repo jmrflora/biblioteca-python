@@ -1,7 +1,7 @@
 from typing import Optional, List
 from sqlmodel import Field, SQLModel, Relationship
 
-from ..emprestimo.models import Emprestimo
+from projetoBiblio.app.emprestimo.models import Emprestimo
 
 
 class LivroBase(SQLModel):
@@ -32,6 +32,7 @@ class Exemplar(ExemplarBase, table=True):
 
     livro: Optional[Livro] = Relationship(back_populates="exemplares")
     usuario_links: List[Emprestimo] = Relationship(back_populates="exemplar")
+
 
 class ExemplarCreate(ExemplarBase):
     pass
