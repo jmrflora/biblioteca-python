@@ -1,3 +1,5 @@
+import sys
+sys.path.extend(['/home/jmrflora/repos/biblioteca-python/projetoBiblioV2/'])
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config

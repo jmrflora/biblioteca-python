@@ -11,6 +11,7 @@ class HealthCheck(BaseModel):
 
 # Livros e exemplares:
 class LivroBase(SQLModel):
+    nome: str = Field(min_length=3)
     Autor: str = Field(min_length=3)
     EP: bool
 
