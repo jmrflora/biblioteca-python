@@ -2,8 +2,9 @@ from typing import Annotated, List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 
-from ..core.db import get_session
-from .models import *
+from projetoBiblio.app.core.db import get_session
+from projetoBiblio.app.core.models import Livro, LivroCreate, LivroRead, LivroComExemplares, Exemplar, ExemplarRead, \
+    ExemplarCreate, ExemplarReadComLivro
 
 router = APIRouter()
 
@@ -56,5 +57,3 @@ def create_exemplar(db: db_dependency, exempar_form: ExemplarCreate):
     db.commit()
     db.refresh(db_exemplar)
     return db_exemplar
-
-

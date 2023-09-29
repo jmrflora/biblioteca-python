@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from ..pessoas.api import router as pessoas_router
-from ..Livro.api import router as livros_router
+# from ..pessoas.api import router as pessoas_router
+from projetoBiblio.app.api.livro_router import router as livros_router
 
 
 api_router = APIRouter()
@@ -9,8 +9,8 @@ api_router = APIRouter()
 include_api = api_router.include_router
 
 routers = (
-    (pessoas_router, "pessoas", "pessoas"),
-    (livros_router, "livros", "livros")
+    # (pessoas_router, "pessoas", "pessoas"),
+    (livros_router, "livros", "livros"),
 )
 
 for router_item in routers:
