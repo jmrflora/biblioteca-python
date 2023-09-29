@@ -1,3 +1,5 @@
+import sys
+sys.path.extend(['/home/jmrflora/repos/biblioteca-python/projetoBiblioV2/'])
 import sqlmodel
 import uvicorn
 from fastapi import FastAPI
@@ -15,6 +17,7 @@ app = FastAPI(
 )
 
 # SQLModel.metadata.create_all(engine)
+
 
 app.include_router(api_router)
 

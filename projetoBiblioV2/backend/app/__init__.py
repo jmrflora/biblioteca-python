@@ -1,3 +1,5 @@
+import sys
+sys.path.extend(['/home/jmrflora/repos/biblioteca-python/projetoBiblioV2/'])
 from os import getenv
 
 
