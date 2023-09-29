@@ -7,14 +7,16 @@ from backend.app import settings
 from backend.app.schemas import models
 from backend.app.schemas.models import HealthCheck
 from backend.app.core.db import engine
+from backend.app.router.endpoints import api_router
 
 app = FastAPI(
     title=settings.project_name,
     version=settings.version
 )
 
+# SQLModel.metadata.create_all(engine)
 
-SQLModel.metadata.create_all(engine)
+app.include_router(api_router)
 
 
 @app.get('/', response_model=HealthCheck, tags=["status"])
