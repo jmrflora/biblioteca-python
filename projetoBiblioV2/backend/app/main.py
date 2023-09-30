@@ -1,4 +1,5 @@
 import sys
+
 sys.path.extend(['/home/jmrflora/repos/biblioteca-python/projetoBiblioV2/'])
 import sqlmodel
 import uvicorn

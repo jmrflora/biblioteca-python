@@ -3,7 +3,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 
 from backend.app.core.db import get_session
-from backend.app.schemas.models import Livro, LivroRead, LivroCreate, LivroComExemplares, Exemplar, ExemplarRead, \
+from backend.app.schemas.models import Livro, LivroRead, LivroCreate, LivroUpdate, LivroComExemplares, Exemplar, \
+    ExemplarRead, \
     ExemplarCreate, ExemplarReadComLivro
 
 router = APIRouter()
@@ -26,6 +27,26 @@ def get_livro_by_id(db: db_dependency, livro_id: int):
     return db_livro
 
 
+@router.patch('/{livro_id}', response_model=LivroComExemplares)
+def update_livro(db: db_dependency, livro_id: int, livro_update_form: LivroUpdate):
+    db_livro = db.get(Livro, livro_id)
+    if not db_livro:
+        raise HTTPException(status_code=404, detail="livro not found")
+
+    livro_data = livro_update_form.dict(exclude_unset=True)
+    for key, value in livro_data.items():
+        setattr(db_livro, key, value)
+    """""
+    print(db_livro.nome)
+    print(db_livro.Autor)
+    print(db_livro.EP)
+    """
+    db.add(db_livro)
+    db.commit()
+    db.refresh(db_livro)
+    return db_livro
+
+
 @router.post('/', response_model=LivroRead)
 def create_livro(db: db_dependency, livro_form: LivroCreate):
     db_livro = Livro.from_orm(livro_form)
@@ -33,6 +54,17 @@ def create_livro(db: db_dependency, livro_form: LivroCreate):
     db.commit()
     db.refresh(db_livro)
     return db_livro
+
+
+@router.delete('/{livro_id}')
+def delete_livro(db: db_dependency, livro_id: int):
+    db_livro = db.get(Livro, livro_id)
+    if not db_livro:
+        raise HTTPException(status_code=404, detail="livro not found")
+
+    db.delete(db_livro)
+    db.commit()
+    return {"ok": True}
 
 
 @router.get('/exemplar/livro/{livro_id}', response_model=List[ExemplarRead])
@@ -57,3 +89,14 @@ def create_exemplar(db: db_dependency, exempar_form: ExemplarCreate):
     db.commit()
     db.refresh(db_exemplar)
     return db_exemplar
+
+
+@router.delete('/exemplar/{exemplar_id}')
+def delete_exemplar(db: db_dependency, exemplar_id: int):
+    db_exemplar = db.get(Exemplar, exemplar_id)
+    if not db_exemplar:
+        raise HTTPException(status_code=404, detail="exemplar not found")
+
+    db.delete(db_exemplar)
+    db.commit()
+    return {"ok": True}

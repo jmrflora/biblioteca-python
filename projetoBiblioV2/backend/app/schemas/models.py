@@ -29,9 +29,6 @@ class EmprestimoRead(EmprestimoBase):
     id: int
 
 
-
-
-
 # Livros e exemplares:
 class LivroBase(SQLModel):
     nome: str = Field(min_length=3)
@@ -51,6 +48,12 @@ class LivroCreate(LivroBase):
 
 class LivroRead(LivroBase):
     id: int
+
+
+class LivroUpdate(SQLModel):
+    nome: Optional[str] = None
+    Autor: Optional[str] = None
+    EP: Optional[bool] = False
 
 
 class ExemplarBase(SQLModel):
@@ -80,7 +83,7 @@ class LivroComExemplares(LivroRead):
     exemplares: List[ExemplarRead] = []
 
 
-# Pessoas:
+# ____________________________________________________________Pessoas______________________________________________________________________
 class Pessoa(SQLModel):
     nome: str = Field(min_length=3, nullable=False)
     email: str = Field(min_length=3, nullable=False)
