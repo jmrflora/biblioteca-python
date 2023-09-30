@@ -109,6 +109,13 @@ class UsuarioCreate(UsuarioBase):
     senha: str = Field(min_length=3)
 
 
+class UsuarioUpdate(SQLModel):
+    nome: Optional[str]
+    email: Optional[str]
+    endereco: Optional[str]
+    telefone: Optional[str]
+
+
 class AdminBase(Pessoa):
     pass
 
@@ -124,6 +131,11 @@ class AdminRead(AdminBase):
 
 class AdminCreate(AdminBase):
     senha: str = Field(min_length=3)
+
+
+class AdminUpdate(SQLModel):
+    nome: Optional[str]
+    email: Optional[str]
 
 
 class EmprestimoReadComUsuarioExemplar(EmprestimoRead):
