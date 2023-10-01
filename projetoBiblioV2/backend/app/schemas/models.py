@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List, Optional
 
 from pydantic import BaseModel
@@ -16,6 +17,7 @@ class EmprestimoBase(SQLModel):
 
 class Emprestimo(EmprestimoBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
+    created_at: datetime = Field(default_factory=datetime.now, nullable=False)
 
     exemplar: "Exemplar" = Relationship(back_populates="usuario_links")
     usuario: "Usuario" = Relationship(back_populates="exemplar_links")
@@ -27,6 +29,7 @@ class EmprestimoCreate(EmprestimoBase):
 
 class EmprestimoRead(EmprestimoBase):
     id: int
+    created_at: datetime
 
 
 # Livros e exemplares:
@@ -138,6 +141,7 @@ class AdminUpdate(SQLModel):
     email: Optional[str]
 
 
+# tem que ser aqui se no tem erro com pydantic
 class EmprestimoReadComUsuarioExemplar(EmprestimoRead):
     usuario: Optional[UsuarioRead]
     exemplar: Optional[ExemplarRead]

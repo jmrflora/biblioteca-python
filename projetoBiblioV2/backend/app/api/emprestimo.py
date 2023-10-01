@@ -33,4 +33,12 @@ def create_emprestimo(db: db_dependency, emprestimo_form: EmprestimoCreate):
     return db_emprestimo
 
 
+@router.delete('/{emprestimo_id}')
+def delete_emprestimo(db: db_dependency, emprestimo_id: int):
+    db_emprestimo = db.get(Emprestimo, emprestimo_id)
+    if not db_emprestimo:
+        raise HTTPException(status_code=404, detail="emprestimo not found")
 
+    db.delete(db_emprestimo)
+    db.commit()
+    return {"ok": True}
