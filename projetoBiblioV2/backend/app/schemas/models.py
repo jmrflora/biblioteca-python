@@ -32,6 +32,26 @@ class EmprestimoRead(EmprestimoBase):
     created_at: datetime
 
 
+class ReservaBase(EmprestimoBase):
+    pass
+
+
+class Reserva(ReservaBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    created_at: datetime = Field(default_factory=datetime.now, nullable=False)
+
+    exemplar: "Exemplar" = Relationship(back_populates="usuario_reserva_links")
+    usuario: "Usuario" = Relationship(back_populates="exemplar_reserva_links")
+
+
+class ReservaCreate(ReservaBase):
+    pass
+
+
+class ReservaRead(ReservaBase):
+    id: int
+
+
 # Livros e exemplares:
 class LivroBase(SQLModel):
     nome: str = Field(min_length=3)
@@ -67,7 +87,10 @@ class Exemplar(ExemplarBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
 
     livro: Optional[Livro] = Relationship(back_populates="exemplares")
+
     usuario_links: List[Emprestimo] = Relationship(back_populates="exemplar")
+
+    usuario_reserva_links: List[Reserva] = Relationship(back_populates="exemplar")
 
 
 class ExemplarCreate(ExemplarBase):
@@ -102,6 +125,8 @@ class Usuario(UsuarioBase, table=True):
     hashed_password: str
 
     exemplar_links: List[Emprestimo] = Relationship(back_populates="usuario")
+
+    exemplar_reserva_links: List[Reserva] = Relationship(back_populates="usuario")
 
 
 class UsuarioRead(UsuarioBase):
@@ -143,5 +168,10 @@ class AdminUpdate(SQLModel):
 
 # tem que ser aqui se no tem erro com pydantic
 class EmprestimoReadComUsuarioExemplar(EmprestimoRead):
+    usuario: Optional[UsuarioRead]
+    exemplar: Optional[ExemplarRead]
+
+
+class ReservaReadComUsuarioExemplar(ReservaRead):
     usuario: Optional[UsuarioRead]
     exemplar: Optional[ExemplarRead]
