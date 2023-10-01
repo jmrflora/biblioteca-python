@@ -5,6 +5,7 @@ from backend.app.api.usuario import router as usuarios_router
 from backend.app.api.admin import router as admins_router
 from backend.app.api.emprestimo import router as emprestimos_router
 from backend.app.api.reserva import router as reservas_router
+from backend.app.api.devolucao import router as devolucoes_router
 
 
 api_router = APIRouter()
@@ -17,6 +18,7 @@ routers = (
     (admins_router, "admins", "admins"),
     (emprestimos_router, "emprestimos", "emprestimos"),
     (reservas_router, "reservas", "reservas"),
+    (devolucoes_router, "devolucao", "devolucao"),
 )
 
 for router_item in routers:

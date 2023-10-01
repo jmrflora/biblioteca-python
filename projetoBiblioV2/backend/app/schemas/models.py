@@ -21,6 +21,7 @@ class Emprestimo(EmprestimoBase, table=True):
 
     exemplar: "Exemplar" = Relationship(back_populates="usuario_links")
     usuario: "Usuario" = Relationship(back_populates="exemplar_links")
+    devolucao: Optional["Devolucao"] = Relationship(back_populates="emprestimo")
 
 
 class EmprestimoCreate(EmprestimoBase):
@@ -34,6 +35,27 @@ class EmprestimoRead(EmprestimoBase):
 
 class ReservaBase(EmprestimoBase):
     pass
+
+
+class DevolucaoBase(SQLModel):
+    emprestimo_id: int = Field(default=None, foreign_key="emprestimo.id")
+
+
+class Devolucao(DevolucaoBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+
+    created_at: datetime = Field(default_factory=datetime.now, nullable=False)
+
+    emprestimo: Emprestimo = Relationship(back_populates="devolucao")
+
+
+class DevolucaoCreate(DevolucaoBase):
+    pass
+
+
+class DevolucaoRead(DevolucaoBase):
+    id: int
+    created_at: datetime
 
 
 class Reserva(ReservaBase, table=True):
@@ -175,3 +197,7 @@ class EmprestimoReadComUsuarioExemplar(EmprestimoRead):
 class ReservaReadComUsuarioExemplar(ReservaRead):
     usuario: Optional[UsuarioRead]
     exemplar: Optional[ExemplarRead]
+
+
+class DevolucaoReadComEmprestimo(DevolucaoRead):
+    emprestimo: Emprestimo
