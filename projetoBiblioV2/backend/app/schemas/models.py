@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, condecimal
 from sqlmodel import SQLModel, Field, Relationship
 
 
@@ -33,12 +33,10 @@ class EmprestimoRead(EmprestimoBase):
     created_at: datetime
 
 
-class ReservaBase(EmprestimoBase):
-    pass
-
-
 class DevolucaoBase(SQLModel):
     emprestimo_id: int = Field(default=None, foreign_key="emprestimo.id")
+
+    notaDePagamento_id: Optional[int] = Field(default=None, foreign_key="notadepagamento.id")
 
 
 class Devolucao(DevolucaoBase, table=True):
@@ -48,6 +46,8 @@ class Devolucao(DevolucaoBase, table=True):
 
     emprestimo: Emprestimo = Relationship(back_populates="devolucao")
 
+    notaDePagamento: "NotaDePagamento" = Relationship(back_populates="devolucoes")
+
 
 class DevolucaoCreate(DevolucaoBase):
     pass
@@ -56,6 +56,36 @@ class DevolucaoCreate(DevolucaoBase):
 class DevolucaoRead(DevolucaoBase):
     id: int
     created_at: datetime
+
+
+class NotaDePagamentoBase(SQLModel):
+    preco: condecimal(max_digits=5, decimal_places=2) = Field(default=10.00)
+
+    usuario_id: int = Field(default=None, foreign_key="usuario.id")
+
+
+class NotaDePagamento(NotaDePagamentoBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+
+    devolucoes: List[Devolucao] = Relationship(back_populates="notaDePagamento")
+
+    usuario: "Usuario" = Relationship(back_populates="notas_de_pagamento")
+
+
+class NotaDePagamentoRead(NotaDePagamentoBase):
+    id: int
+
+
+class NotaDePagamentoCreate(NotaDePagamentoBase):
+    pass
+
+
+class NotaDePagamentoUpdate(SQLModel):
+    preco: Optional[float]
+
+
+class ReservaBase(EmprestimoBase):
+    pass
 
 
 class Reserva(ReservaBase, table=True):
@@ -150,6 +180,8 @@ class Usuario(UsuarioBase, table=True):
 
     exemplar_reserva_links: List[Reserva] = Relationship(back_populates="usuario")
 
+    notas_de_pagamento: List[NotaDePagamento] = Relationship(back_populates="usuario")
+
 
 class UsuarioRead(UsuarioBase):
     id: int
@@ -201,3 +233,8 @@ class ReservaReadComUsuarioExemplar(ReservaRead):
 
 class DevolucaoReadComEmprestimo(DevolucaoRead):
     emprestimo: Emprestimo
+
+
+class NotaDePagamentoReadComUsuarioDevolucao(NotaDePagamentoRead):
+    usuario: Optional[UsuarioRead]
+    devolucoes: List[DevolucaoRead]
