@@ -21,16 +21,13 @@ class Emprestimo(EmprestimoBase, table=True):
 
     exemplar: "Exemplar" = Relationship(back_populates="usuario_links")
     usuario: "Usuario" = Relationship(back_populates="exemplar_links")
+
+    # devolucao_id: Optional[int] = Field(default=None, foreign_key="devolucao.id", nullable=True)
     devolucao: Optional["Devolucao"] = Relationship(back_populates="emprestimo")
 
 
 class EmprestimoCreate(EmprestimoBase):
     pass
-
-
-class EmprestimoRead(EmprestimoBase):
-    id: int
-    created_at: datetime
 
 
 class DevolucaoBase(SQLModel):
@@ -221,9 +218,6 @@ class AdminUpdate(SQLModel):
 
 
 # tem que ser aqui se no tem erro com pydantic
-class EmprestimoReadComUsuarioExemplar(EmprestimoRead):
-    usuario: Optional[UsuarioRead]
-    exemplar: Optional[ExemplarRead]
 
 
 class ReservaReadComUsuarioExemplar(ReservaRead):
@@ -238,3 +232,14 @@ class DevolucaoReadComEmprestimo(DevolucaoRead):
 class NotaDePagamentoReadComUsuarioDevolucao(NotaDePagamentoRead):
     usuario: Optional[UsuarioRead]
     devolucoes: List[DevolucaoRead]
+
+
+class EmprestimoRead(EmprestimoBase):
+    id: int
+    # devolucao: Optional[Devolucao]
+    created_at: datetime
+
+
+class EmprestimoReadComUsuarioExemplar(EmprestimoRead):
+    usuario: Optional[UsuarioRead]
+    exemplar: Optional[ExemplarRead]
