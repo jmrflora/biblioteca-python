@@ -7,6 +7,7 @@ from backend.app.api.emprestimo import router as emprestimos_router
 from backend.app.api.reserva import router as reservas_router
 from backend.app.api.devolucao import router as devolucoes_router
 from backend.app.api.notaDePagamento import router as notas_router
+from backend.app.api.auth import router as auth_router
 
 
 
@@ -32,6 +33,7 @@ routers = (
     (reservas_router, "reservas", "reservas"),
     (devolucoes_router, "devolucoes", "devolucoes"),
     (notas_router, "notas", "notas"),
+    (auth_router, "auth", "auth"),
 )
 
 for router_item in routers:
