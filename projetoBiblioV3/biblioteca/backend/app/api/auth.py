@@ -66,4 +66,4 @@ def login_para_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
 @router.get('/teste')
 def teste(usuario: Annotated[dict, Depends(get_current_user)]):
     
-    return {'teste': 'ola'}
+    return {'nome': usuario.get('nome')}
