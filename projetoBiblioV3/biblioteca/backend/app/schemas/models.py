@@ -1,8 +1,9 @@
+import enum
 from datetime import datetime
 from typing import List, Optional
 
 from pydantic import BaseModel, condecimal
-from sqlmodel import SQLModel, Field, Relationship
+from sqlmodel import SQLModel, Field, Relationship, Enum, Column
 
 
 class HealthCheck(BaseModel):
@@ -158,6 +159,13 @@ class LivroComExemplares(LivroRead):
 
 
 # ____________________________________________________________Pessoas______________________________________________________________________
+class Role(enum.Enum):
+    ADMIN = 'admin'
+    CLIENTE = 'cliente' 
+
+
+
+
 class Pessoa(SQLModel):
     nome: str = Field(min_length=3, nullable=False)
     email: str = Field(min_length=3, nullable=False)
@@ -166,7 +174,8 @@ class Pessoa(SQLModel):
 class UsuarioBase(Pessoa):
     endereco: str = Field(min_length=3, nullable=False)
     telefone: str = Field(min_length=3)
-
+    tipo: Role = Field(sa_column=Column(Enum(Role)))
+    
 
 class Usuario(UsuarioBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -183,7 +192,9 @@ class UsuarioRead(UsuarioBase):
     id: int
 
 
-class UsuarioCreate(UsuarioBase):
+class UsuarioCreate(Pessoa):
+    endereco: str = Field(min_length=3, nullable=False)
+    telefone: str = Field(min_length=3) 
     senha: str = Field(min_length=3)
 
 
