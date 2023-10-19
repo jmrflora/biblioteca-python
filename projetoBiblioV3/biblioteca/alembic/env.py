@@ -6,7 +6,7 @@ from sqlmodel import SQLModel
 
 from alembic import context
 
-from backend.app.schemas.models import Livro, Usuario, Admin, Devolucao, Emprestimo, NotaDePagamento, Reserva
+from backend.app.schemas.models import Livro, Usuario, Devolucao, Emprestimo, NotaDePagamento, Reserva
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

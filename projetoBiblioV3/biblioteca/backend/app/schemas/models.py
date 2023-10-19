@@ -205,28 +205,6 @@ class UsuarioUpdate(SQLModel):
     telefone: Optional[str]
 
 
-class AdminBase(Pessoa):
-    pass
-
-
-class Admin(AdminBase, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    hashed_password: str
-
-
-class AdminRead(AdminBase):
-    id: int
-
-
-class AdminCreate(AdminBase):
-    senha: str = Field(min_length=3)
-
-
-class AdminUpdate(SQLModel):
-    nome: Optional[str]
-    email: Optional[str]
-
-
 # tem que ser aqui se no tem erro com pydantic
 
 
