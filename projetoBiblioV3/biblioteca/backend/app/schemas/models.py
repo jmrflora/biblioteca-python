@@ -154,6 +154,7 @@ class ExemplarReadComLivro(ExemplarRead):
     livro: Optional[LivroRead]
 
 
+
 class LivroComExemplares(LivroRead):
     exemplares: List[ExemplarRead] = []
 
@@ -231,3 +232,10 @@ class EmprestimoRead(EmprestimoBase):
 class EmprestimoReadComUsuarioExemplar(EmprestimoRead):
     usuario: Optional[UsuarioRead]
     exemplar: Optional[ExemplarRead]
+
+
+class ExemplarReadComLivroEmprestimo(ExemplarReadComLivro):
+    usuario_links: list[EmprestimoRead]
+    
+class ExemplarReadComLivroReserva(ExemplarReadComLivro):
+    usuario_reserva_links: List[ReservaRead]
