@@ -208,6 +208,8 @@ class UsuarioUpdate(SQLModel):
 
 # tem que ser aqui se no tem erro com pydantic
 
+class ReservaReadComExemplar(ReservaRead):
+    exemplar: Optional[ExemplarRead]
 
 class ReservaReadComUsuarioExemplar(ReservaRead):
     usuario: Optional[UsuarioRead]
