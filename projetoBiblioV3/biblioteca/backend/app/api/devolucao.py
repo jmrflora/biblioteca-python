@@ -40,6 +40,16 @@ def get_all_devolucao(db: db_dependency, admin: user_dependecy, cliente_id: Anno
     db_devolucoes = db.exec(statement).all()
     return db_devolucoes
 
+@router.get('/me', response_model=List[DevolucaoReadComEmprestimo])
+def get_devolucao_me(db: db_dependency, usuario: user_dependecy):
+    db_cliente = db.get(Usuario, usuario.get('id'))
+    if not db_cliente:
+        raise HTTPException(status_code=404, detail="cliente not found")
+    if db_cliente.tipo.value != "cliente":
+        raise HTTPException(status_code=401, detail="not a cliente")
+    
+    db_devolucoes = db.exec(select(Devolucao).where(Devolucao.emprestimo.has(usuario=db_cliente)))
+    return db_devolucoes
 
 @router.get('/{devolucao_id}', response_model=DevolucaoReadComEmprestimo)
 def get_devolucao(db: db_dependency, devolucao_id: int, admin: user_dependecy):
