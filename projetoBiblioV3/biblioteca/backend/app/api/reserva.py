@@ -12,7 +12,7 @@ db_dependendy = Annotated[Session, Depends(get_session)]
 user_dependecy = Annotated[dict, Depends(get_current_user)]
 
 @router.get('/', response_model=List[ReservaRead])
-def get_all_reserva(db: db_dependendy , admin: user_dependecy, cliente_id: Annotated[int | None, Query()] = None):
+def get_all_reserva(db: db_dependendy , admin: user_dependecy, cliente_id: Annotated[int | None, Query()] = None, exemplar_id: Annotated[int | None, Query()]= None):
     db_admin = db.get(Usuario, admin.get('id'))
     
     if not db_admin:
@@ -20,14 +20,23 @@ def get_all_reserva(db: db_dependendy , admin: user_dependecy, cliente_id: Annot
     if db_admin.tipo.value != "admin":
         raise HTTPException(status_code=401, detail="not an admin")
     
-    if cliente_id == None:
-        db_reservas = db.exec(select(Reserva)).all()
-    else:
+    statement = select(Reserva)
+    
+    if cliente_id != None:
         db_cliente = db.get(Usuario, cliente_id)
         if not db_cliente:
-            raise HTTPException(status_code=404, detail="cliente não encontrado")
-        db_reservas = db.exec(select(Reserva).where(Reserva.usuario == db_cliente)).all()    
+            raise HTTPException(status_code=404, detail="cliente not found")
         
+        statement = statement.where(Reserva.emprestimo.has(usuario=db_cliente))
+        # statement = statement.where(Devolucao.emprestimo.usuario == db_cliente)
+        
+    if exemplar_id != None:
+        db_exemplar= db.get(Reserva, exemplar_id)
+        if not db_exemplar:
+            raise HTTPException(status_code=404, detail="exemplar not found")
+        statement = statement.where(Reserva.emprestimo.has(exemplar=db_exemplar))
+    
+    db_reservas = db.exec(statement).all()    
     return db_reservas
 
 @router.get('/me', response_model=List[ReservaReadComExemplar])

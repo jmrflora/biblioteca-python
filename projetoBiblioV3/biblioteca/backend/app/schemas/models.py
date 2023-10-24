@@ -33,17 +33,17 @@ class EmprestimoCreate(EmprestimoBase):
 class DevolucaoBase(SQLModel):
     emprestimo_id: int = Field(default=None, foreign_key="emprestimo.id")
 
-    notaDePagamento_id: Optional[int] = Field(default=None, foreign_key="notadepagamento.id")
-
 
 class Devolucao(DevolucaoBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
 
+    notaDePagamento_id: Optional[int] = Field(default=None, foreign_key="notadepagamento.id")
+    
     created_at: datetime = Field(default_factory=datetime.now, nullable=False)
 
     emprestimo: Emprestimo = Relationship(back_populates="devolucao")
 
-    notaDePagamento: "NotaDePagamento" = Relationship(back_populates="devolucoes")
+    notaDePagamento: Optional["NotaDePagamento"] = Relationship(back_populates="devolucoes")
 
 
 class DevolucaoCreate(DevolucaoBase):
@@ -53,6 +53,7 @@ class DevolucaoCreate(DevolucaoBase):
 class DevolucaoRead(DevolucaoBase):
     id: int
     created_at: datetime
+    notaDePagamento_id: Optional[int]
 
 
 class NotaDePagamentoBase(SQLModel):
@@ -226,14 +227,14 @@ class NotaDePagamentoReadComUsuarioDevolucao(NotaDePagamentoRead):
 
 
 class EmprestimoRead(EmprestimoBase):
-    id: int
-    # devolucao: Optional[Devolucao]
+    id: int 
     created_at: datetime
 
 
 class EmprestimoReadComUsuarioExemplar(EmprestimoRead):
     usuario: Optional[UsuarioRead]
     exemplar: Optional[ExemplarRead]
+    
 
 
 class ExemplarReadComLivroEmprestimo(ExemplarReadComLivro):

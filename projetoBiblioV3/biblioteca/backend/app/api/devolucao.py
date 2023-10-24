@@ -4,7 +4,7 @@ from sqlmodel import Session, select
 from backend.app.api.auth import get_current_user
 
 from backend.app.core.db import get_session
-from backend.app.schemas.models import Devolucao, DevolucaoRead, DevolucaoCreate, DevolucaoReadComEmprestimo, Exemplar, Usuario
+from backend.app.schemas.models import Devolucao, DevolucaoRead, DevolucaoCreate, DevolucaoReadComEmprestimo, Emprestimo, Exemplar, Usuario
 
 router = APIRouter()
 
@@ -50,6 +50,24 @@ def get_devolucao_me(db: db_dependency, usuario: user_dependecy):
     
     db_devolucoes = db.exec(select(Devolucao).where(Devolucao.emprestimo.has(usuario=db_cliente)))
     return db_devolucoes
+
+@router.get('/emprestimo/{emprestimo_id}', response_model=DevolucaoReadComEmprestimo)
+def get_devolucao_por_emprestimoId(db: db_dependency, admin: user_dependecy, emprestimo_id: int):
+    db_admin = db.get(Usuario, admin.get('id'))
+    
+    if not db_admin:
+        raise HTTPException(status_code=404, detail="admin nao encontrado")
+    if db_admin.tipo.value != "admin":
+        raise HTTPException(status_code=401, detail="not an admin")
+    
+    db_emprestimo = db.get(Emprestimo, emprestimo_id)
+    if not db_emprestimo:
+        raise HTTPException(status_code=404, detail="emprestimo not found")
+    
+    db_devolucao = db.exec(select(Devolucao).where(Devolucao.emprestimo == db_emprestimo)).first()
+    if not db_devolucao:
+        raise HTTPException(status_code=404, detail="devolucao not found")
+    return db_devolucao
 
 @router.get('/{devolucao_id}', response_model=DevolucaoReadComEmprestimo)
 def get_devolucao(db: db_dependency, devolucao_id: int, admin: user_dependecy):

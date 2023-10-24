@@ -1,5 +1,5 @@
 from typing import Annotated, List
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlmodel import Session, select
 from backend.app.api.auth import get_current_user
 
@@ -14,8 +14,14 @@ db_dependency = Annotated[Session, Depends(get_session)]
 user_dependecy = Annotated[dict, Depends(get_current_user)]
 
 @router.get('/', response_model=List[LivroRead])
-def get_all_livros(db: db_dependency):
-    db_livros = db.exec(select(Livro)).all()
+def get_all_livros(db: db_dependency, autor: Annotated[str | None, Query()] = None):
+    
+    statement = select(Livro)
+    
+    if autor != None:
+        statement = statement.where(Livro.Autor == autor)
+    
+    db_livros = db.exec(statement).all()
     return db_livros
 
 
@@ -87,12 +93,6 @@ def delete_livro(db: db_dependency, livro_id: int, admin: user_dependecy):
     db.delete(db_livro)
     db.commit()
     return {"ok": True}
-
-
-@router.get('/exemplar/{livro_id}', response_model=List[ExemplarRead])
-def get_all_por_livro_id(db: db_dependency, livro_id: int):
-    db_exemplares = db.exec(select(Exemplar).where(Exemplar.livro_id == livro_id)).all()
-    return db_exemplares
 
 
 
