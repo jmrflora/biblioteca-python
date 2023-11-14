@@ -1,0 +1,701 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 13.12
+-- Dumped by pg_dump version 13.12
+
+-- Started on 2023-11-03 16:51:10 UTC
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 670 (class 1247 OID 16515)
+-- Name: role; Type: TYPE; Schema: public; Owner: biblio
+--
+
+CREATE TYPE public.role AS ENUM (
+    'ADMIN',
+    'CLIENTE'
+);
+
+
+ALTER TYPE public.role OWNER TO biblio;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- TOC entry 206 (class 1259 OID 16437)
+-- Name: alembic_version; Type: TABLE; Schema: public; Owner: biblio
+--
+
+CREATE TABLE public.alembic_version (
+    version_num character varying(32) NOT NULL
+);
+
+
+ALTER TABLE public.alembic_version OWNER TO biblio;
+
+--
+-- TOC entry 212 (class 1259 OID 16480)
+-- Name: devolucao; Type: TABLE; Schema: public; Owner: biblio
+--
+
+CREATE TABLE public.devolucao (
+    emprestimo_id integer,
+    id integer NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    "notaDePagamento_id" integer
+);
+
+
+ALTER TABLE public.devolucao OWNER TO biblio;
+
+--
+-- TOC entry 211 (class 1259 OID 16478)
+-- Name: devolucao_id_seq; Type: SEQUENCE; Schema: public; Owner: biblio
+--
+
+CREATE SEQUENCE public.devolucao_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.devolucao_id_seq OWNER TO biblio;
+
+--
+-- TOC entry 3081 (class 0 OID 0)
+-- Dependencies: 211
+-- Name: devolucao_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: biblio
+--
+
+ALTER SEQUENCE public.devolucao_id_seq OWNED BY public.devolucao.id;
+
+
+--
+-- TOC entry 208 (class 1259 OID 16444)
+-- Name: emprestimo; Type: TABLE; Schema: public; Owner: biblio
+--
+
+CREATE TABLE public.emprestimo (
+    exemplar_id integer,
+    usuario_id integer,
+    id integer NOT NULL,
+    created_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE public.emprestimo OWNER TO biblio;
+
+--
+-- TOC entry 207 (class 1259 OID 16442)
+-- Name: emprestimo_id_seq; Type: SEQUENCE; Schema: public; Owner: biblio
+--
+
+CREATE SEQUENCE public.emprestimo_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.emprestimo_id_seq OWNER TO biblio;
+
+--
+-- TOC entry 3082 (class 0 OID 0)
+-- Dependencies: 207
+-- Name: emprestimo_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: biblio
+--
+
+ALTER SEQUENCE public.emprestimo_id_seq OWNED BY public.emprestimo.id;
+
+
+--
+-- TOC entry 205 (class 1259 OID 16421)
+-- Name: exemplar; Type: TABLE; Schema: public; Owner: biblio
+--
+
+CREATE TABLE public.exemplar (
+    livro_id integer,
+    id integer NOT NULL
+);
+
+
+ALTER TABLE public.exemplar OWNER TO biblio;
+
+--
+-- TOC entry 204 (class 1259 OID 16419)
+-- Name: exemplar_id_seq; Type: SEQUENCE; Schema: public; Owner: biblio
+--
+
+CREATE SEQUENCE public.exemplar_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.exemplar_id_seq OWNER TO biblio;
+
+--
+-- TOC entry 3083 (class 0 OID 0)
+-- Dependencies: 204
+-- Name: exemplar_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: biblio
+--
+
+ALTER SEQUENCE public.exemplar_id_seq OWNED BY public.exemplar.id;
+
+
+--
+-- TOC entry 203 (class 1259 OID 16410)
+-- Name: livro; Type: TABLE; Schema: public; Owner: biblio
+--
+
+CREATE TABLE public.livro (
+    "Autor" character varying NOT NULL,
+    "EP" boolean NOT NULL,
+    id integer NOT NULL,
+    nome character varying NOT NULL
+);
+
+
+ALTER TABLE public.livro OWNER TO biblio;
+
+--
+-- TOC entry 202 (class 1259 OID 16408)
+-- Name: livro_id_seq; Type: SEQUENCE; Schema: public; Owner: biblio
+--
+
+CREATE SEQUENCE public.livro_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.livro_id_seq OWNER TO biblio;
+
+--
+-- TOC entry 3084 (class 0 OID 0)
+-- Dependencies: 202
+-- Name: livro_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: biblio
+--
+
+ALTER SEQUENCE public.livro_id_seq OWNED BY public.livro.id;
+
+
+--
+-- TOC entry 214 (class 1259 OID 16493)
+-- Name: notadepagamento; Type: TABLE; Schema: public; Owner: biblio
+--
+
+CREATE TABLE public.notadepagamento (
+    preco numeric(5,2) NOT NULL,
+    usuario_id integer,
+    id integer NOT NULL
+);
+
+
+ALTER TABLE public.notadepagamento OWNER TO biblio;
+
+--
+-- TOC entry 213 (class 1259 OID 16491)
+-- Name: notadepagamento_id_seq; Type: SEQUENCE; Schema: public; Owner: biblio
+--
+
+CREATE SEQUENCE public.notadepagamento_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.notadepagamento_id_seq OWNER TO biblio;
+
+--
+-- TOC entry 3085 (class 0 OID 0)
+-- Dependencies: 213
+-- Name: notadepagamento_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: biblio
+--
+
+ALTER SEQUENCE public.notadepagamento_id_seq OWNED BY public.notadepagamento.id;
+
+
+--
+-- TOC entry 210 (class 1259 OID 16462)
+-- Name: reserva; Type: TABLE; Schema: public; Owner: biblio
+--
+
+CREATE TABLE public.reserva (
+    exemplar_id integer,
+    usuario_id integer,
+    id integer NOT NULL,
+    created_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE public.reserva OWNER TO biblio;
+
+--
+-- TOC entry 209 (class 1259 OID 16460)
+-- Name: reserva_id_seq; Type: SEQUENCE; Schema: public; Owner: biblio
+--
+
+CREATE SEQUENCE public.reserva_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.reserva_id_seq OWNER TO biblio;
+
+--
+-- TOC entry 3086 (class 0 OID 0)
+-- Dependencies: 209
+-- Name: reserva_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: biblio
+--
+
+ALTER SEQUENCE public.reserva_id_seq OWNED BY public.reserva.id;
+
+
+--
+-- TOC entry 201 (class 1259 OID 16388)
+-- Name: usuario; Type: TABLE; Schema: public; Owner: biblio
+--
+
+CREATE TABLE public.usuario (
+    nome character varying NOT NULL,
+    email character varying NOT NULL,
+    endereco character varying NOT NULL,
+    telefone character varying NOT NULL,
+    id integer NOT NULL,
+    hashed_password character varying NOT NULL,
+    tipo public.role
+);
+
+
+ALTER TABLE public.usuario OWNER TO biblio;
+
+--
+-- TOC entry 200 (class 1259 OID 16386)
+-- Name: usuario_id_seq; Type: SEQUENCE; Schema: public; Owner: biblio
+--
+
+CREATE SEQUENCE public.usuario_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.usuario_id_seq OWNER TO biblio;
+
+--
+-- TOC entry 3087 (class 0 OID 0)
+-- Dependencies: 200
+-- Name: usuario_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: biblio
+--
+
+ALTER SEQUENCE public.usuario_id_seq OWNED BY public.usuario.id;
+
+
+--
+-- TOC entry 2905 (class 2604 OID 16483)
+-- Name: devolucao id; Type: DEFAULT; Schema: public; Owner: biblio
+--
+
+ALTER TABLE ONLY public.devolucao ALTER COLUMN id SET DEFAULT nextval('public.devolucao_id_seq'::regclass);
+
+
+--
+-- TOC entry 2903 (class 2604 OID 16447)
+-- Name: emprestimo id; Type: DEFAULT; Schema: public; Owner: biblio
+--
+
+ALTER TABLE ONLY public.emprestimo ALTER COLUMN id SET DEFAULT nextval('public.emprestimo_id_seq'::regclass);
+
+
+--
+-- TOC entry 2902 (class 2604 OID 16424)
+-- Name: exemplar id; Type: DEFAULT; Schema: public; Owner: biblio
+--
+
+ALTER TABLE ONLY public.exemplar ALTER COLUMN id SET DEFAULT nextval('public.exemplar_id_seq'::regclass);
+
+
+--
+-- TOC entry 2901 (class 2604 OID 16413)
+-- Name: livro id; Type: DEFAULT; Schema: public; Owner: biblio
+--
+
+ALTER TABLE ONLY public.livro ALTER COLUMN id SET DEFAULT nextval('public.livro_id_seq'::regclass);
+
+
+--
+-- TOC entry 2906 (class 2604 OID 16496)
+-- Name: notadepagamento id; Type: DEFAULT; Schema: public; Owner: biblio
+--
+
+ALTER TABLE ONLY public.notadepagamento ALTER COLUMN id SET DEFAULT nextval('public.notadepagamento_id_seq'::regclass);
+
+
+--
+-- TOC entry 2904 (class 2604 OID 16465)
+-- Name: reserva id; Type: DEFAULT; Schema: public; Owner: biblio
+--
+
+ALTER TABLE ONLY public.reserva ALTER COLUMN id SET DEFAULT nextval('public.reserva_id_seq'::regclass);
+
+
+--
+-- TOC entry 2900 (class 2604 OID 16391)
+-- Name: usuario id; Type: DEFAULT; Schema: public; Owner: biblio
+--
+
+ALTER TABLE ONLY public.usuario ALTER COLUMN id SET DEFAULT nextval('public.usuario_id_seq'::regclass);
+
+
+--
+-- TOC entry 3067 (class 0 OID 16437)
+-- Dependencies: 206
+-- Data for Name: alembic_version; Type: TABLE DATA; Schema: public; Owner: biblio
+--
+
+COPY public.alembic_version (version_num) FROM stdin;
+19d710c2584c
+\.
+
+
+--
+-- TOC entry 3073 (class 0 OID 16480)
+-- Dependencies: 212
+-- Data for Name: devolucao; Type: TABLE DATA; Schema: public; Owner: biblio
+--
+
+COPY public.devolucao (emprestimo_id, id, created_at, "notaDePagamento_id") FROM stdin;
+3	2	2023-10-01 20:03:09.909894	1
+5	3	2023-10-23 15:41:20.48156	2
+4	4	2023-10-23 15:42:19.655156	2
+\.
+
+
+--
+-- TOC entry 3069 (class 0 OID 16444)
+-- Dependencies: 208
+-- Data for Name: emprestimo; Type: TABLE DATA; Schema: public; Owner: biblio
+--
+
+COPY public.emprestimo (exemplar_id, usuario_id, id, created_at) FROM stdin;
+2	1	3	2023-10-01 01:13:05.025316
+4	3	4	2023-10-02 10:23:56.858698
+6	3	5	2023-10-23 15:12:10.632325
+\.
+
+
+--
+-- TOC entry 3066 (class 0 OID 16421)
+-- Dependencies: 205
+-- Data for Name: exemplar; Type: TABLE DATA; Schema: public; Owner: biblio
+--
+
+COPY public.exemplar (livro_id, id) FROM stdin;
+2	2
+2	4
+4	5
+4	6
+4	7
+\.
+
+
+--
+-- TOC entry 3064 (class 0 OID 16410)
+-- Dependencies: 203
+-- Data for Name: livro; Type: TABLE DATA; Schema: public; Owner: biblio
+--
+
+COPY public.livro ("Autor", "EP", id, nome) FROM stdin;
+jmrflora	f	2	livro teste v4
+herman melville	f	4	moby dick
+pedro	f	5	os 3 mosqueteiros
+\.
+
+
+--
+-- TOC entry 3075 (class 0 OID 16493)
+-- Dependencies: 214
+-- Data for Name: notadepagamento; Type: TABLE DATA; Schema: public; Owner: biblio
+--
+
+COPY public.notadepagamento (preco, usuario_id, id) FROM stdin;
+10.50	1	1
+10.00	3	2
+\.
+
+
+--
+-- TOC entry 3071 (class 0 OID 16462)
+-- Dependencies: 210
+-- Data for Name: reserva; Type: TABLE DATA; Schema: public; Owner: biblio
+--
+
+COPY public.reserva (exemplar_id, usuario_id, id, created_at) FROM stdin;
+4	3	2	2023-10-11 16:36:37.663118
+\.
+
+
+--
+-- TOC entry 3062 (class 0 OID 16388)
+-- Dependencies: 201
+-- Data for Name: usuario; Type: TABLE DATA; Schema: public; Owner: biblio
+--
+
+COPY public.usuario (nome, email, endereco, telefone, id, hashed_password, tipo) FROM stdin;
+email teste	email teste	rua teste	2199999	1	$2b$12$ENNjipf57853EOvcNyczf.DF9t7MXIfCjKjffumJToz73Yr9KMtEa	CLIENTE
+jose	email	rua rua	12345	4	$2b$12$dd5i0gUSQBNRH9yHs6.SKeVnJPav1C3gqOVUDPhHWlGLEWHhTmIaO	CLIENTE
+admin	emailadmin	rua admin	123456	5	$2b$12$DuFFuoRHTlCxlSKZnEnEWOm0dCdQJlnpSmtJBYxr0Y4XED5C2ptEu	ADMIN
+teste aaa	email aaaa	rua a	1234	6	$2b$12$jtX/4Bh9RH1FNFVG8/qdLehavzqFqmJmCvCYVGPTJ5MlZgu0U./bu	CLIENTE
+usuario teste	emailv2	rua do teste	21999999	3	$2b$12$3NWDn6hm9igISccGDRRNNODxKeSQylxoadK3B1YOVlD2yPL73tNBu	CLIENTE
+\.
+
+
+--
+-- TOC entry 3088 (class 0 OID 0)
+-- Dependencies: 211
+-- Name: devolucao_id_seq; Type: SEQUENCE SET; Schema: public; Owner: biblio
+--
+
+SELECT pg_catalog.setval('public.devolucao_id_seq', 4, true);
+
+
+--
+-- TOC entry 3089 (class 0 OID 0)
+-- Dependencies: 207
+-- Name: emprestimo_id_seq; Type: SEQUENCE SET; Schema: public; Owner: biblio
+--
+
+SELECT pg_catalog.setval('public.emprestimo_id_seq', 5, true);
+
+
+--
+-- TOC entry 3090 (class 0 OID 0)
+-- Dependencies: 204
+-- Name: exemplar_id_seq; Type: SEQUENCE SET; Schema: public; Owner: biblio
+--
+
+SELECT pg_catalog.setval('public.exemplar_id_seq', 7, true);
+
+
+--
+-- TOC entry 3091 (class 0 OID 0)
+-- Dependencies: 202
+-- Name: livro_id_seq; Type: SEQUENCE SET; Schema: public; Owner: biblio
+--
+
+SELECT pg_catalog.setval('public.livro_id_seq', 5, true);
+
+
+--
+-- TOC entry 3092 (class 0 OID 0)
+-- Dependencies: 213
+-- Name: notadepagamento_id_seq; Type: SEQUENCE SET; Schema: public; Owner: biblio
+--
+
+SELECT pg_catalog.setval('public.notadepagamento_id_seq', 2, true);
+
+
+--
+-- TOC entry 3093 (class 0 OID 0)
+-- Dependencies: 209
+-- Name: reserva_id_seq; Type: SEQUENCE SET; Schema: public; Owner: biblio
+--
+
+SELECT pg_catalog.setval('public.reserva_id_seq', 2, true);
+
+
+--
+-- TOC entry 3094 (class 0 OID 0)
+-- Dependencies: 200
+-- Name: usuario_id_seq; Type: SEQUENCE SET; Schema: public; Owner: biblio
+--
+
+SELECT pg_catalog.setval('public.usuario_id_seq', 6, true);
+
+
+--
+-- TOC entry 2914 (class 2606 OID 16441)
+-- Name: alembic_version alembic_version_pkc; Type: CONSTRAINT; Schema: public; Owner: biblio
+--
+
+ALTER TABLE ONLY public.alembic_version
+    ADD CONSTRAINT alembic_version_pkc PRIMARY KEY (version_num);
+
+
+--
+-- TOC entry 2920 (class 2606 OID 16485)
+-- Name: devolucao devolucao_pkey; Type: CONSTRAINT; Schema: public; Owner: biblio
+--
+
+ALTER TABLE ONLY public.devolucao
+    ADD CONSTRAINT devolucao_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2916 (class 2606 OID 16449)
+-- Name: emprestimo emprestimo_pkey; Type: CONSTRAINT; Schema: public; Owner: biblio
+--
+
+ALTER TABLE ONLY public.emprestimo
+    ADD CONSTRAINT emprestimo_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2912 (class 2606 OID 16426)
+-- Name: exemplar exemplar_pkey; Type: CONSTRAINT; Schema: public; Owner: biblio
+--
+
+ALTER TABLE ONLY public.exemplar
+    ADD CONSTRAINT exemplar_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2910 (class 2606 OID 16418)
+-- Name: livro livro_pkey; Type: CONSTRAINT; Schema: public; Owner: biblio
+--
+
+ALTER TABLE ONLY public.livro
+    ADD CONSTRAINT livro_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2922 (class 2606 OID 16498)
+-- Name: notadepagamento notadepagamento_pkey; Type: CONSTRAINT; Schema: public; Owner: biblio
+--
+
+ALTER TABLE ONLY public.notadepagamento
+    ADD CONSTRAINT notadepagamento_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2918 (class 2606 OID 16467)
+-- Name: reserva reserva_pkey; Type: CONSTRAINT; Schema: public; Owner: biblio
+--
+
+ALTER TABLE ONLY public.reserva
+    ADD CONSTRAINT reserva_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2908 (class 2606 OID 16396)
+-- Name: usuario usuario_pkey; Type: CONSTRAINT; Schema: public; Owner: biblio
+--
+
+ALTER TABLE ONLY public.usuario
+    ADD CONSTRAINT usuario_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2928 (class 2606 OID 16486)
+-- Name: devolucao devolucao_emprestimo_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: biblio
+--
+
+ALTER TABLE ONLY public.devolucao
+    ADD CONSTRAINT devolucao_emprestimo_id_fkey FOREIGN KEY (emprestimo_id) REFERENCES public.emprestimo(id);
+
+
+--
+-- TOC entry 2929 (class 2606 OID 16504)
+-- Name: devolucao devolucao_notaDePagamento_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: biblio
+--
+
+ALTER TABLE ONLY public.devolucao
+    ADD CONSTRAINT "devolucao_notaDePagamento_id_fkey" FOREIGN KEY ("notaDePagamento_id") REFERENCES public.notadepagamento(id);
+
+
+--
+-- TOC entry 2924 (class 2606 OID 16450)
+-- Name: emprestimo emprestimo_exemplar_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: biblio
+--
+
+ALTER TABLE ONLY public.emprestimo
+    ADD CONSTRAINT emprestimo_exemplar_id_fkey FOREIGN KEY (exemplar_id) REFERENCES public.exemplar(id);
+
+
+--
+-- TOC entry 2925 (class 2606 OID 16455)
+-- Name: emprestimo emprestimo_usuario_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: biblio
+--
+
+ALTER TABLE ONLY public.emprestimo
+    ADD CONSTRAINT emprestimo_usuario_id_fkey FOREIGN KEY (usuario_id) REFERENCES public.usuario(id);
+
+
+--
+-- TOC entry 2923 (class 2606 OID 16427)
+-- Name: exemplar exemplar_livro_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: biblio
+--
+
+ALTER TABLE ONLY public.exemplar
+    ADD CONSTRAINT exemplar_livro_id_fkey FOREIGN KEY (livro_id) REFERENCES public.livro(id);
+
+
+--
+-- TOC entry 2930 (class 2606 OID 16499)
+-- Name: notadepagamento notadepagamento_usuario_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: biblio
+--
+
+ALTER TABLE ONLY public.notadepagamento
+    ADD CONSTRAINT notadepagamento_usuario_id_fkey FOREIGN KEY (usuario_id) REFERENCES public.usuario(id);
+
+
+--
+-- TOC entry 2926 (class 2606 OID 16468)
+-- Name: reserva reserva_exemplar_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: biblio
+--
+
+ALTER TABLE ONLY public.reserva
+    ADD CONSTRAINT reserva_exemplar_id_fkey FOREIGN KEY (exemplar_id) REFERENCES public.exemplar(id);
+
+
+--
+-- TOC entry 2927 (class 2606 OID 16473)
+-- Name: reserva reserva_usuario_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: biblio
+--
+
+ALTER TABLE ONLY public.reserva
+    ADD CONSTRAINT reserva_usuario_id_fkey FOREIGN KEY (usuario_id) REFERENCES public.usuario(id);
+
+
+-- Completed on 2023-11-03 16:51:37 UTC
+
+--
+-- PostgreSQL database dump complete
+--
+
