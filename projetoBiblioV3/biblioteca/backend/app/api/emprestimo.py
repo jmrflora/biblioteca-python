@@ -1,16 +1,25 @@
+from enum import Enum
 from typing import Annotated, List
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlmodel import Session, select
+from sqlmodel import Session, select, SQLModel
 from backend.app.api.auth import get_current_user
+from datetime import datetime, timedelta
 
 from backend.app.core.db import get_session
-from backend.app.schemas.models import Emprestimo, EmprestimoRead, EmprestimoCreate, EmprestimoReadComUsuarioExemplar, Exemplar, Usuario, EmprestimoMe, Livro
+from backend.app.schemas.models import Devolucao, Emprestimo, EmprestimoRead, EmprestimoCreate, EmprestimoReadComUsuarioExemplar, Exemplar, Usuario, EmprestimoMe, Livro
 
 router = APIRouter()
 
 db_dependency = Annotated[Session, Depends(get_session)]
 user_dependecy = Annotated[dict, Depends(get_current_user)]
 
+class Status(str, Enum):
+    ok = "ok"
+    atrasado = "atrasado"
+    devolvido = "devolvido"
+
+class EmprestimoStatus(SQLModel):
+    status: Status
 
 # todo, fazer um get com emprestimos do usuario atual
 
@@ -53,7 +62,7 @@ def get_emprestimo_me(db: db_dependency, usuario: user_dependecy):
 
     nova_lista: List[EmprestimoMe] = []
     for emprestimo in db_emprestimos:
-        novo = EmprestimoMe(id=emprestimo.exemplar_id, created_at=emprestimo.created_at, livro=db.get(Livro, emprestimo.exemplar.livro_id))
+        novo = EmprestimoMe(id=emprestimo.id, created_at=emprestimo.created_at, livro=db.get(Livro, emprestimo.exemplar.livro_id))
         novo.exemplar_id = emprestimo.exemplar_id
         novo.usuario_id = emprestimo.usuario_id
         novo.livro = db.get(Livro, emprestimo.exemplar.livro_id)
@@ -74,6 +83,34 @@ def get_emprestimo_by_id(db: db_dependency, emprestimo_id: int, admin: user_depe
     if not db_emprestimo:
         raise HTTPException(status_code=404, detail="emprestimo not found")
     return db_emprestimo
+
+
+@router.get('/{emprestimo_id}/status', response_model=EmprestimoStatus)
+def get_emprestimo_status_by_id(db: db_dependency, emprestimo_id: int, user: user_dependecy):
+    now = datetime.now()
+    db_usuario = db.get(Usuario, user.get('id'))
+    if not db_usuario:
+        raise HTTPException(status_code=404, detail="Usuario nao encontrado")
+    
+    db_emprestimo = db.get(Emprestimo, emprestimo_id)
+    if not db_emprestimo:
+        raise HTTPException(status_code=404, detail="emprestimo not found")
+    
+    if db_usuario.tipo.value != "admin":
+        if db_emprestimo.usuario_id != db_usuario.id:
+            raise HTTPException(status_code=404, detail="emprestimo not found")
+
+    db_devolucao = db.exec(select(Devolucao).where(Devolucao.emprestimo == db_emprestimo)).first()
+    if not db_devolucao:
+        # Check if the created_at date is older than 14 days
+        if now - db_emprestimo.created_at > timedelta(days=14):
+            print("The date is older than 14 days.")
+            return EmprestimoStatus(status=Status.atrasado)
+        else:
+            print("The date is not older than 14 days.")
+            return EmprestimoStatus(status=Status.ok)
+    
+    return EmprestimoStatus(status=Status.devolvido)    
 
 
 @router.post('/', response_model=EmprestimoRead)
