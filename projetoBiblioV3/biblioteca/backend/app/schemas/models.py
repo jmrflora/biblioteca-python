@@ -234,6 +234,9 @@ class EmprestimoRead(EmprestimoBase):
 class EmprestimoReadComUsuarioExemplar(EmprestimoRead):
     usuario: Optional[UsuarioRead]
     exemplar: Optional[ExemplarRead]
+
+class EmprestimoMe(EmprestimoRead):
+    livro: LivroRead
     
 
 

@@ -4,7 +4,7 @@ from sqlmodel import Session, select
 from backend.app.api.auth import get_current_user
 
 from backend.app.core.db import get_session
-from backend.app.schemas.models import Emprestimo, EmprestimoRead, EmprestimoCreate, EmprestimoReadComUsuarioExemplar, Exemplar, Usuario
+from backend.app.schemas.models import Emprestimo, EmprestimoRead, EmprestimoCreate, EmprestimoReadComUsuarioExemplar, Exemplar, Usuario, EmprestimoMe, Livro
 
 router = APIRouter()
 
@@ -42,7 +42,7 @@ def get_all_emprestimo(db: db_dependency, admin: user_dependecy, cliente_id: Ann
     
     return db_emprestimos
 
-@router.get('/me', response_model=List[EmprestimoRead])
+@router.get('/me', response_model=EmprestimoMe)
 def get_emprestimo_me(db: db_dependency, usuario: user_dependecy):
     db_usuario = db.get(Usuario, usuario.get('id'))
     
@@ -50,7 +50,17 @@ def get_emprestimo_me(db: db_dependency, usuario: user_dependecy):
         raise HTTPException(status_code=404, detail="usuario not found")
     
     db_emprestimos = db.exec(select(Emprestimo).where(Emprestimo.usuario == db_usuario)).all()
-    return db_emprestimos
+    teste = db_emprestimos[0]
+
+    novo = EmprestimoMe(id=teste.exemplar_id, created_at=teste.created_at, livro=db.get(Livro, teste.exemplar.livro_id))
+    novo.exemplar_id = teste.exemplar_id
+    novo.usuario_id = teste.usuario_id
+    
+    novo.livro = db.get(Livro, teste.exemplar.livro_id)
+    
+    # teste.livro = db.get(Livro, teste.exemplar.livro_id)
+    
+    return novo
 
 @router.get('/{emprestimo_id}', response_model=EmprestimoReadComUsuarioExemplar)
 def get_emprestimo_by_id(db: db_dependency, emprestimo_id: int, admin: user_dependecy):
