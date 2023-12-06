@@ -1,4 +1,4 @@
-from typing import Annotated, List
+from typing import Annotated, List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlmodel import Session, select, SQLModel
 from backend.app.api.auth import get_current_user
@@ -16,6 +16,7 @@ user_dependecy = Annotated[dict, Depends(get_current_user)]
 class disponibilidade(SQLModel):
     disponivel: bool
     msg: str
+    exemplar: Optional[int]
 
 @router.get('/', response_model=List[LivroRead])
 def get_all_livros(db: db_dependency, autor: Annotated[str | None, Query()] = None):
@@ -58,13 +59,13 @@ def check_disponibilidade(db: db_dependency,usuario: user_dependecy,livro_id: in
         try:
             db_emprestimo = exemplar.usuario_links[-1]
         except IndexError:
-            return{"disponivel": True, "msg": "sem emprestimos"}
+            return{"disponivel": True, "msg": "sem emprestimos", "exemplar": exemplar.id}
 
         # ver se esse emprestimo possui devolução
         db_devolucao = db.exec(select(Devolucao).where(Devolucao.emprestimo == db_emprestimo)).first()
         # se tiver, retornar disponível
         if db_devolucao:
-            return {"disponivel": True, "msg": "tudo ok"}
+            return {"disponivel": True, "msg": "tudo ok", "exemplar": exemplar.id}
 
     return {"disponivel": False, "msg": "erro"}
 
@@ -84,13 +85,17 @@ def update_livro(db: db_dependency, livro_id: int, livro_update_form: LivroUpdat
         raise HTTPException(status_code=404, detail="livro not found")
 
     livro_data = livro_update_form.dict(exclude_unset=True)
+    
     for key, value in livro_data.items():
+        print("olaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+        print("value:")
+        print(value)
         setattr(db_livro, key, value)
-    """""
+    
     print(db_livro.nome)
     print(db_livro.Autor)
     print(db_livro.EP)
-    """
+    
     db.add(db_livro)
     db.commit()
     db.refresh(db_livro)
